@@ -5,6 +5,8 @@ assets/external/
 __pycache__/
 .web
 .env
+.env/
 .venv
+.venv/
 alembic/
 alembic.ini

@@ -1,3 +1,3 @@
-reflex==0.8.9
+reflex==0.8.10
 pymysql
 python-dotenv

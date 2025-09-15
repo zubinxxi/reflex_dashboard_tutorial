@@ -25,6 +25,8 @@ class State(rx.State):
             query = select(Users)
             self.users = session.exec(query).all()
 
+        self.transform_data()
+
     #Función que trae los datos de un usuario
     def get_user(self, user: Users):
         

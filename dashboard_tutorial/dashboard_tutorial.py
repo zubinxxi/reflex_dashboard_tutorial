@@ -311,42 +311,43 @@ def graph():
 
 def index() -> rx.Component:
     return rx.vstack(
+        # CSS que se carga inmediatamente
+        rx.style("""
+            /* Ocultación instantánea */
+            a.css-tww8i9 {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                position: absolute !important;
+                left: -9999px !important;
+            }
+        """),
+        
+        # JavaScript que elimina después
         rx.script(
             """
-            // Eliminar el enlace flotante usando las clases exactas
-            function removeFloatingReflexLink() {
-                // Todas las clases específicas del enlace
-                const targetClasses = [
-                    'css-tww8i9',      // Contenedor principal
-                    'css-1wzg22f',     // SVG icon
-                    'css-bnqfad',      // Rectángulo del SVG
-                    'css-j4aqsr',      // Paths del SVG
-                    'css-1v8fzbk',     // Contenedor del texto
-                    'css-vq6poo'       // Texto "Built with Reflex"
-                ];
+            // Función para eliminar completamente
+            function completeRemoval() {
+                const reflexElements = document.querySelectorAll([
+                    'a.css-tww8i9',
+                    'a[href="https://reflex.dev"]',
+                    '[class*="reflex-footer"]',
+                    '[class*="built-with"]'
+                ].join(','));
                 
-                // Buscar por cada clase
-                for (const className of targetClasses) {
-                    const elements = document.querySelectorAll(`.${className}`);
-                    elements.forEach(el => el.remove());
-                }
-                
-                // Buscar específicamente el enlace <a> con href
-                const reflexLinks = document.querySelectorAll('a');
-                for (let link of reflexLinks) {
-                    if (link.href === 'https://reflex.dev/' || 
-                        link.href.includes('reflex.dev')) {
-                        link.remove();
-                        return true;
+                reflexElements.forEach(el => {
+                    if (el.parentNode) {
+                        el.parentNode.removeChild(el);
                     }
-                }
-                
-                return false;
+                });
             }
             
-            // Ejecutar la eliminación
-            removeFloatingReflexLink();
-            setInterval(removeFloatingReflexLink, 50);
+            // Ejecutar en diferentes momentos para asegurar
+            completeRemoval();
+            document.addEventListener('DOMContentLoaded', completeRemoval);
+            window.addEventListener('load', completeRemoval);
+            setInterval(completeRemoval, 100);
             """
         ),
         add_customer_button(),

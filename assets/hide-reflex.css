@@ -1,0 +1,16 @@
+/* Ocultar específicamente el enlace "Built with Reflex" */
+.css-tww8i9 {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Ocultar también el SVG y texto */
+.css-1wzg22f,
+.css-bnqfad, 
+.css-j4aqsr,
+.css-1v8fzbk,
+.css-vq6poo {
+    display: none !important;
+}

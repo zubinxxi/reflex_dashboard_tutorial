@@ -352,7 +352,13 @@ def index() -> rx.Component:
         width="100%",
         align="center",
         justify="center",
-        padding="40px 0px"
+        padding="40px 0px",
+        
+        # Añadir el CSS personalizado
+        style=rx.style.Style({
+            "import": "/hide-reflex.css"
+        })
+
     )
 
 

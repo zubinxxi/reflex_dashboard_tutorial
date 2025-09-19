@@ -311,43 +311,34 @@ def graph():
 
 def index() -> rx.Component:
     return rx.vstack(
-        # CSS que se carga inmediatamente
-        rx.style("""
-            /* Ocultación instantánea */
-            a.css-tww8i9 {
-                display: none !important;
-                visibility: hidden !important;
-                opacity: 0 !important;
-                pointer-events: none !important;
-                position: absolute !important;
-                left: -9999px !important;
-            }
-        """),
-        
-        # JavaScript que elimina después
+        # JavaScript único que se encarga de todo
         rx.script(
             """
-            // Función para eliminar completamente
-            function completeRemoval() {
-                const reflexElements = document.querySelectorAll([
+            // Ocultar inmediatamente con CSS inline
+            const hideStyle = document.createElement('style');
+            hideStyle.textContent = `
+                a.css-tww8i9, 
+                a[href="https://reflex.dev"] {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                }
+            `;
+            document.head.appendChild(hideStyle);
+            
+            // Eliminar permanentemente después
+            function removeReflexElements() {
+                const elements = document.querySelectorAll([
                     'a.css-tww8i9',
-                    'a[href="https://reflex.dev"]',
-                    '[class*="reflex-footer"]',
-                    '[class*="built-with"]'
+                    'a[href="https://reflex.dev"]'
                 ].join(','));
                 
-                reflexElements.forEach(el => {
-                    if (el.parentNode) {
-                        el.parentNode.removeChild(el);
-                    }
-                });
+                elements.forEach(el => el.remove());
             }
             
-            // Ejecutar en diferentes momentos para asegurar
-            completeRemoval();
-            document.addEventListener('DOMContentLoaded', completeRemoval);
-            window.addEventListener('load', completeRemoval);
-            setInterval(completeRemoval, 100);
+            // Ejecutar múltiples veces
+            removeReflexElements();
+            setInterval(removeReflexElements, 50);
             """
         ),
         add_customer_button(),

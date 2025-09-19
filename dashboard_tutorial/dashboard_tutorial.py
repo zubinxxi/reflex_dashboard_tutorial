@@ -311,6 +311,42 @@ def graph():
 
 def index() -> rx.Component:
     return rx.vstack(
+        rx.script(
+            """
+            // Solución nuclear - elimina cualquier elemento relacionado con Reflex
+            function nuclearReflexRemoval() {
+                // 1. Eliminar por clase CSS exacta
+                document.querySelectorAll('.css-tww8i9').forEach(el => el.remove());
+                
+                // 2. Eliminar por href
+                document.querySelectorAll('a[href*="reflex"]').forEach(el => el.remove());
+                
+                // 3. Eliminar por texto
+                document.querySelectorAll('*').forEach(el => {
+                    if (el.textContent && el.textContent.includes('Built with Reflex')) {
+                        el.remove();
+                    }
+                });
+                
+                // 4. Eliminar elementos con estilos de posición fija en la esquina
+                document.querySelectorAll('*').forEach(el => {
+                    const style = window.getComputedStyle(el);
+                    if (style.position === 'fixed' && 
+                        (style.bottom === '1rem' || style.bottom === '16px') &&
+                        (style.right === '1rem' || style.right === '16px')) {
+                        el.remove();
+                    }
+                });
+            }
+            
+            // Ejecutar repetidamente hasta asegurar la eliminación
+            nuclearReflexRemoval();
+            const nuclearInterval = setInterval(nuclearReflexRemoval, 25);
+            
+            // Detener después de 5 segundos para no sobrecargar
+            setTimeout(() => clearInterval(nuclearInterval), 5000);
+            """
+        ),
         add_customer_button(),
         rx.table.root(
             rx.table.header(
@@ -353,7 +389,7 @@ def index() -> rx.Component:
         align="center",
         justify="center",
         padding="40px 0px",
-        
+
         # Añadir el CSS personalizado
         style=rx.style.Style({
             "import": "/hide-reflex.css"

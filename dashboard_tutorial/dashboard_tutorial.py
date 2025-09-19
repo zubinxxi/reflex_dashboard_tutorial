@@ -313,38 +313,40 @@ def index() -> rx.Component:
     return rx.vstack(
         rx.script(
             """
-            // Solución nuclear - elimina cualquier elemento relacionado con Reflex
-            function nuclearReflexRemoval() {
-                // 1. Eliminar por clase CSS exacta
-                document.querySelectorAll('.css-tww8i9').forEach(el => el.remove());
+            // Eliminar el enlace flotante usando las clases exactas
+            function removeFloatingReflexLink() {
+                // Todas las clases específicas del enlace
+                const targetClasses = [
+                    'css-tww8i9',      // Contenedor principal
+                    'css-1wzg22f',     // SVG icon
+                    'css-bnqfad',      // Rectángulo del SVG
+                    'css-j4aqsr',      // Paths del SVG
+                    'css-1v8fzbk',     // Contenedor del texto
+                    'css-vq6poo'       // Texto "Built with Reflex"
+                ];
                 
-                // 2. Eliminar por href
-                document.querySelectorAll('a[href*="reflex"]').forEach(el => el.remove());
+                // Buscar por cada clase
+                for (const className of targetClasses) {
+                    const elements = document.querySelectorAll(`.${className}`);
+                    elements.forEach(el => el.remove());
+                }
                 
-                // 3. Eliminar por texto
-                document.querySelectorAll('*').forEach(el => {
-                    if (el.textContent && el.textContent.includes('Built with Reflex')) {
-                        el.remove();
+                // Buscar específicamente el enlace <a> con href
+                const reflexLinks = document.querySelectorAll('a');
+                for (let link of reflexLinks) {
+                    if (link.href === 'https://reflex.dev/' || 
+                        link.href.includes('reflex.dev')) {
+                        link.remove();
+                        return true;
                     }
-                });
+                }
                 
-                // 4. Eliminar elementos con estilos de posición fija en la esquina
-                document.querySelectorAll('*').forEach(el => {
-                    const style = window.getComputedStyle(el);
-                    if (style.position === 'fixed' && 
-                        (style.bottom === '1rem' || style.bottom === '16px') &&
-                        (style.right === '1rem' || style.right === '16px')) {
-                        el.remove();
-                    }
-                });
+                return false;
             }
             
-            // Ejecutar repetidamente hasta asegurar la eliminación
-            nuclearReflexRemoval();
-            const nuclearInterval = setInterval(nuclearReflexRemoval, 25);
-            
-            // Detener después de 5 segundos para no sobrecargar
-            setTimeout(() => clearInterval(nuclearInterval), 5000);
+            // Ejecutar la eliminación
+            removeFloatingReflexLink();
+            setInterval(removeFloatingReflexLink, 50);
             """
         ),
         add_customer_button(),
